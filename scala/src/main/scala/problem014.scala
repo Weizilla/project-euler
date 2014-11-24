@@ -18,7 +18,7 @@ NOTE: Once the chain starts the terms are allowed to go above one million.
 837799
  */
 
-object problem014 extends common {
+object problem014 extends runner {
   var allMaps = mutable.Map[BigInt,Int](BigInt(1) -> 1)
 
   def collatz(num: BigInt): Int = {
