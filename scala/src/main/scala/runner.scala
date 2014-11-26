@@ -1,7 +1,11 @@
 import scala.concurrent.duration.{SECONDS, NANOSECONDS, Duration}
 
 abstract class runner {
-  def run(): Any
+  def testCase(): Boolean = {
+    true
+  }
+
+  def mainCase(): Long
 
   def time[R](block: => R, message: String = ""): R = {
     val t0: Long = System.nanoTime()
@@ -13,6 +17,7 @@ abstract class runner {
   }
 
   def main(args: Array[String]) {
-    println(time(run()))
+    assert(testCase())
+    println(time(mainCase()))
   }
 }

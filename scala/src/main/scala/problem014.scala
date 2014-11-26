@@ -37,7 +37,7 @@ object problem014 extends runner {
     collatz(num, 1, List())
   }
 
-  override def run(): Any = {
+  override def mainCase(): Long = {
     List.range(1, 1000000).map(collatz(_)).zipWithIndex.maxBy(_._1)._2 + 1
   }
 }

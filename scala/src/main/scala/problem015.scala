@@ -29,10 +29,10 @@ object problem015 extends runner {
     }
   }
 
-  override def run(): Any = {
+  override def mainCase(): Long = {
     val size = 20
     val r = size * 2
-    calc(r, size)
+    calc(r, size).toLong
   }
 }
 
