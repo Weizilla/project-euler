@@ -2,6 +2,7 @@ package problem021
 import akka.actor.{ActorSystem, Props}
 import akka.pattern.ask
 import akka.util.Timeout
+import common.Timer
 import problem021.Factors.Amicable
 
 import scala.concurrent.Await
@@ -21,25 +22,33 @@ Answer:
 31626
  */
 
-object Main extends App {
-  implicit val timeout = Timeout(100.seconds)
+object Main extends Timer {
+  def main(): Int = {
+    implicit val timeout = Timeout(100.seconds)
 
-  val system = ActorSystem("problem021")
-  val factorActor = system.actorOf(Props[Factors])
-  val future = (factorActor ? Factors.FactorToLimit(10000)).mapTo[Amicable]
+    val system = ActorSystem("problem021")
+    val factorActor = system.actorOf(Props[Factors])
+    val future = (factorActor ? Factors.FactorToLimit(10000)).mapTo[Amicable]
 
-  val result = Await.result(future, timeout.duration).pairs.sortBy(f => f._1)
-  println(s"RESULT: " + result.mkString("\n"))
+    val result = Await.result(future, timeout.duration).pairs.sortBy(f => f._1)
+    println(s"RESULT: " + result.mkString("\n"))
 
-  var allResults = Set.empty[Int]
-  for {
-    (p1, p2) <- result
-  } {
-    allResults += p1
-    allResults += p2
+    var allResults = Set.empty[Int]
+    for {
+      (p1, p2) <- result
+    } {
+      allResults += p1
+      allResults += p2
+    }
+
+    val sum: Int = allResults.sum
+    println("FINAL: " + sum)
+
+    system.awaitTermination()
+    sum
   }
 
-  println("FINAL: " + allResults.sum)
-
-  system.awaitTermination()
+  def main(args: Array[String]): Unit = {
+    time(main)
+  }
 }

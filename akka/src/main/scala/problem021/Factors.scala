@@ -1,29 +1,30 @@
 package problem021
 
-import akka.actor.{PoisonPill, Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.routing.RoundRobinPool
 import problem021.Factors.{Amicable, FactorToLimit}
 
 class Factors extends Actor with ActorLogging {
   var factorSums = Map.empty[Int, Int]
-  var workers = Set.empty[ActorRef]
+  var factors = Set.empty[Int]
   var orgSender: ActorRef = _
 
   override def receive: Receive = {
     case FactorToLimit(limit) =>
       orgSender = sender
+      val f = context.actorOf(Props[FactorActor].withRouter(RoundRobinPool(10)))
       for (i <- 1 to limit) {
-        val f = context.actorOf(Props[FactorActor], "factor-actor-" + i)
-        workers += f
+        factors += i
         f ! FactorActor.Factor(i)
       }
 
     case FactorActor.FactorSum(num, result) =>
       factorSums += (num -> result)
-      workers -= sender
-      if (workers.isEmpty) {
+      factors -= num
+      if (factors.isEmpty) {
         val pairs = findPairs()
         orgSender ! Amicable(pairs)
-        self ! PoisonPill
+        context.system.shutdown()
       }
   }
 

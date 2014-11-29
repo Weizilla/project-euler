@@ -1,6 +1,7 @@
 package problem021
 
 import akka.actor.{PoisonPill, ActorRef, Actor, ActorLogging, Props}
+import akka.routing.RoundRobinPool
 import problem021.FactorActor.{FactorSum, Factor}
 
 import scala.math.sqrt
@@ -18,8 +19,8 @@ class FactorActor extends Actor with ActorLogging {
 
       testFactors = (2 to (sqrt(num.toDouble).toInt + 1)).toSet
 
+      val testFactor = context.actorOf(Props[FactorTestActor].withRouter(RoundRobinPool(4)))
       for (f <- testFactors) {
-        val testFactor = context.actorOf(Props[FactorTestActor], s"test-actor-$num-$f")
         testFactor ! FactorTestActor.TestFactor(f, num)
       }
     }
