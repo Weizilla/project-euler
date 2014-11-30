@@ -5,6 +5,7 @@ import akka.routing.SmallestMailboxPool
 import akka.util.Timeout
 import common.Timer
 
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
 
 /**
@@ -34,7 +35,7 @@ case class CalculationResult(result: Int)
 class MasterActor extends Actor with ActorLogging {
   var names: Array[(String, Int)] = _
   val worker = context.actorOf(Props[WorkerActor].withRouter(SmallestMailboxPool(10)))
-  var results = List.empty[Int]
+  val results = ArrayBuffer.empty[Int]
 
   override def receive: Receive = {
     case Calculate => {
@@ -48,7 +49,7 @@ class MasterActor extends Actor with ActorLogging {
     }
 
     case CalculationResult(result) =>
-      results = result :: results
+      results += result
       if (results.size == names.size) {
         log.info("SUM: " + results.sum)
         context.system.shutdown()
