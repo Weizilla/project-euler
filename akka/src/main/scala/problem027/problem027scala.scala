@@ -1,10 +1,10 @@
 package problem027
 
-import common.Timer
+import common.timer
 
 import scala.collection.mutable.ArrayBuffer
 
-object problem027scala extends Timer {
+object problem027scala {
 
   def main(args: Array[String]) {
     def calculate {
@@ -32,7 +32,7 @@ object problem027scala extends Timer {
       val max = results.maxBy(_._4)
       println("FINAL: " + max.toString() + " " + max._1 * max._2)
     }
-    time(calculate)
+    timer.time(main(null))
   }
 
 }

@@ -3,7 +3,7 @@ package problem022
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import akka.routing.SmallestMailboxPool
 import akka.util.Timeout
-import common.Timer
+import common.timer
 
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 /**
  * Same as problem 021 but hopefully better use of Actors
  */
-object problem022 extends Timer {
+object problem022 {
   def main(): Unit = {
     implicit val timeout = Timeout(100.seconds)
 
@@ -24,7 +24,7 @@ object problem022 extends Timer {
   }
 
   def main(args: Array[String]) {
-    time(main)
+    timer.time(main)
   }
 }
 

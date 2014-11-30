@@ -2,14 +2,14 @@ package problem021b
 
 import akka.actor.{ActorSystem, Props}
 import akka.util.Timeout
-import common.Timer
+import common.timer
 
 import scala.concurrent.duration._
 
 /**
  * Same as problem 021 but hopefully better use of Actors
  */
-object Main extends Timer {
+object Main {
   def main(): Unit = {
     implicit val timeout = Timeout(100.seconds)
 
@@ -22,6 +22,6 @@ object Main extends Timer {
   }
 
   def main(args: Array[String]) {
-    time(main)
+    timer.time(main)
   }
 }

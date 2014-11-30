@@ -2,7 +2,7 @@ package problem021
 import akka.actor.{ActorSystem, Props}
 import akka.pattern.ask
 import akka.util.Timeout
-import common.Timer
+import common.timer
 import problem021.Factors.Amicable
 
 import scala.concurrent.Await
@@ -22,7 +22,7 @@ Answer:
 31626
  */
 
-object Main extends Timer {
+object Main {
   def main(): Int = {
     implicit val timeout = Timeout(100.seconds)
 
@@ -49,6 +49,6 @@ object Main extends Timer {
   }
 
   def main(args: Array[String]): Unit = {
-    time(main)
+    timer.time(main)
   }
 }

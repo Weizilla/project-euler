@@ -3,7 +3,7 @@ package problem027b
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import akka.routing.RoundRobinPool
 import akka.util.Timeout
-import common.Timer
+import common.timer
 
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 /**
 * same as problem027akka except doesn't have prime look up table
 */
-object problem027akkab extends Timer {
+object problem027akkab {
 
   def isPrime(num: Int): Boolean = {
     if (num < 2) {
@@ -33,7 +33,7 @@ object problem027akkab extends Timer {
   }
 
   def main(args: Array[String]) {
-    time(startActors())
+    timer.time(startActors())
   }
 }
 

@@ -1,8 +1,14 @@
 package common
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.{Duration, NANOSECONDS, SECONDS}
 
-object timer {
+abstract class runner {
+  def testCase(): Boolean = {
+    true
+  }
+
+  def mainCase(): Unit
+
   def time[R](block: => R, message: String = ""): R = {
     val t0: Long = System.nanoTime()
     val result = block
@@ -10,5 +16,10 @@ object timer {
     val duration = Duration(t1 - t0, NANOSECONDS)
     println("Elapsed time: " + duration.toUnit(SECONDS) + " seconds " + message)
     result
+  }
+
+  def main(args: Array[String]) {
+    assert(testCase())
+    println(time(mainCase()))
   }
 }

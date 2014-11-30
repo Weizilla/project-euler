@@ -3,7 +3,7 @@ package problem027
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import akka.routing.RoundRobinPool
 import akka.util.Timeout
-import common.Timer
+import common.timer
 import problem027b.{CalculateB, EvaluateB, EvaluationResultsB}
 
 import scala.collection.immutable.SortedSet
@@ -33,7 +33,7 @@ the maximum number of primes for consecutive values of n, starting with n = 0.
 
 -59231
  */
-object problem027akka extends Timer {
+object problem027akka {
 
   // too slow. faster to calculate if each is prime
   def calculatePrimes(limit: Int): Set[Int] = {
@@ -69,7 +69,7 @@ object problem027akka extends Timer {
   }
 
   def main(args: Array[String]) {
-    time(startActors())
+    timer.time(startActors())
   }
 }
 
