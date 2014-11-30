@@ -4,8 +4,10 @@ import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import akka.routing.RoundRobinPool
 import akka.util.Timeout
 import common.Timer
+import problem027b.{CalculateB, EvaluateB, EvaluationResultsB}
 
 import scala.collection.immutable.SortedSet
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
 
 /** https://projecteuler.net/problem=27
@@ -31,8 +33,9 @@ the maximum number of primes for consecutive values of n, starting with n = 0.
 
 -59231
  */
-object problem027 extends Timer {
+object problem027akka extends Timer {
 
+  // too slow. faster to calculate if each is prime
   def calculatePrimes(limit: Int): Set[Int] = {
     var results = SortedSet(2 to limit: _*)
     var primes = Set.empty[Int]
@@ -48,7 +51,7 @@ object problem027 extends Timer {
         results -= n * i
       }
     }
-    primes + 1
+    (primes + 1).toSet
   }
 
   def startActors(): Unit = {
@@ -60,7 +63,7 @@ object problem027 extends Timer {
     val system = ActorSystem("problem027")
     val master = system.actorOf(Props(new MasterActor(primes)))
 
-    master ! Calculate
+    master ! CalculateB
 
     system.awaitTermination()
   }
@@ -77,31 +80,29 @@ case class EvaluationResults(a: Int, b: Int, numOfPrimes: Int)
 
 class MasterActor(val primes: Set[Int]) extends Actor with ActorLogging {
   val worker = context.actorOf(Props(new WorkerActor(primes)).
-    withRouter(RoundRobinPool(16)))
-  var results = List.empty[(Int, Int, Int)]
+    withRouter(RoundRobinPool(10)))
+  var results = ArrayBuffer.empty[(Int, Int, Int)]
   var workers = Set.empty[(Int, Int)]
   var total = 0
 
   override def receive: Receive = {
-    case Calculate =>
+    case CalculateB =>
       for {
-        a <- -999 to 999 by 2
-        b <- -999 to 999 by 2
+        a <- -999 to 999
+        b <- 2 to 999
         if primes(b) && primes(1 + a + b)
       } {
-        worker ! Evaluate(a, b)
+        worker ! EvaluateB(a, b)
         workers += ((a, b))
       }
       total = workers.size
 
-    case EvaluationResults(a, b, numOfPrimes) => {
+    case EvaluationResultsB(a, b, numOfPrimes) => {
       workers -= ((a, b))
-      results = results :+ (a, b, numOfPrimes)
-//      println("RESULTS SIZE " + results.size + " out of " + total)
+      results += ((a, b, numOfPrimes))
 
       if (workers.isEmpty) {
         log.info("GOT THEM ALL")
-//        println(results.mkString("\n"))
         val max = results.maxBy(_._3)
         log.info(max.toString() + " " + max._1 * max._2 )
         context.system.shutdown()
@@ -112,14 +113,14 @@ class MasterActor(val primes: Set[Int]) extends Actor with ActorLogging {
 
 class WorkerActor(val primes: Set[Int]) extends Actor with ActorLogging {
   override def receive: Actor.Receive = {
-    case Evaluate(a, b) => {
+    case EvaluateB(a, b) => {
       var r = 1
       var n = 0
       do {
         r = n * n + n * a + b
         n += 1
       } while (primes(r))
-      sender ! EvaluationResults(a, b, n - 1)
+      sender ! EvaluationResultsB(a, b, n - 1)
     }
   }
 }
