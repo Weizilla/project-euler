@@ -1,4 +1,5 @@
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 object primer extends runner {
   var primes = mutable.HashMap[Int, Boolean](2 -> true)
@@ -30,14 +31,34 @@ object primer extends runner {
     }
   }
 
+  def genPrimes(limit: Int): List[Int] = {
+    val toCheck = mutable.BitSet(3 to limit by 2: _*)
+    val primes = ListBuffer(1, 2)
+
+    while (toCheck.nonEmpty) {
+      val curr = toCheck.head
+      toCheck.remove(curr)
+      primes += curr
+
+      var product = 0
+      var i = 2
+      while (product <= limit) {
+        product = i * curr
+        toCheck.remove(product)
+        i += 1
+      }
+    }
+
+    primes.toList
+  }
+
   override def mainCase(): Long = {
-//    timer.time((1 to 5000000).foreach(isPrime), message = "0")
-//    timer.time((1 to 5000000).foreach(isPrimeWithMap), message = "2")
-//    timer.time((1 to 5000000).foreach(isPrime), message = "0")
-//    timer.time((1 to 5000000).foreach(isPrimeWithMap), message = "2")
-//    timer.time((1 to 5000000).foreach(isPrime), message = "0")
-//    timer.time((1 to 5000000).foreach(isPrimeWithMap), message = "2")
-    (1 to 100).filter(isPrime).foreach(println)
+//    (1 to 100).filter(isPrime).foreach(println)
+//    timer.time(println(genPrimes(200000).size))
+//    timer.time(println(genPrimes(200000).size))
+//    timer.time(println(genPrimes(200000).size))
+//    timer.time(println(genPrimes(200000).size))
+    println(genPrimes(100).mkString(", "))
     0
   }
 }
