@@ -33,7 +33,7 @@ object primer extends runner {
 
   def genPrimes(limit: Int): List[Int] = {
     val toCheck = mutable.BitSet(3 to limit by 2: _*)
-    val primes = ListBuffer(1, 2)
+    val primes = ListBuffer(2)
 
     while (toCheck.nonEmpty) {
       val curr = toCheck.head
