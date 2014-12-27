@@ -47,7 +47,7 @@ object problem017 extends runner {
 //      println("STR: " + str + " size: " + str.size)
       str.size
     } catch {
-      case e =>
+      case e: Throwable =>
         println("Error for num " + num)
         e.printStackTrace()
         throw e
