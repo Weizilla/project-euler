@@ -21,7 +21,7 @@ object problem043 extends runner {
     (1 to 7).forall(i => num.substring(i, i + 3).toInt % divisor(i - 1) == 0)
   }
 
-  override def mainCase(): Long = {
+  override def mainCase(): Any = {
     (0 to 9).permutations.map(i => i.mkString).filter(_.size == 10).filter(isValid).map(_.toLong).sum
   }
 }
