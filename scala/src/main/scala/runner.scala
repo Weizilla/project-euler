@@ -5,7 +5,7 @@ abstract class runner {
     true
   }
 
-  def mainCase(): Long
+  def mainCase(): Any
 
   def main(args: Array[String]) {
     assert(testCase())
