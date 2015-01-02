@@ -18,15 +18,16 @@ Find the next triangle number that is also pentagonal and hexagonal.
 object problem045 extends runner {
   override def mainCase(): Any = {
     var limit = 1L
-    var tri = Stream.from(286).map(n => n.toLong * (n + 1) / 2)
+    // tri not needed as nums are in hex
+//    var tri = Stream.from(286).map(n => n.toLong * (n + 1) / 2)
     var pen = Stream.from(166).map(n => n.toLong * (3 * n - 1) / 2)
     var hex = Stream.from(144).map(n => n.toLong * (2 * n - 1))
     do {
-      limit = List(tri.head, pen.head, hex.head).max
-      tri = tri.dropWhile(_ < limit)
+      limit = Math.max(pen.head, hex.head)
+//      tri = tri.dropWhile(_ < limit)
       pen = pen.dropWhile(_ < limit)
       hex = hex.dropWhile(_ < limit)
-    } while (tri.head != pen.head || tri.head != hex.head)
-    (tri.head, pen.head, hex.head)
+    } while (pen.head != hex.head)
+    (pen.head, hex.head)
   }
 }
